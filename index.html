@@ -12,41 +12,42 @@
             text-align: left; 
             padding: 20px;
         }
-        .output { 
-            position: absolute; 
-            top: 10px; 
-            left: 10px; 
-            white-space: pre-wrap;
-        }
-        input, button {
+        .status-box {
+            display: none;
             background: #222;
             color: white;
             border: 1px solid #444;
-            padding: 5px 10px;
-            margin-top: 10px;
+            padding: 10px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h2>Java Online Runner</h2>
-    <input type="text" id="userInput" placeholder="Enter a number">
-    <button onclick="runJava()">Run</button>
-    <pre class="output" id="output"></pre>
+    <h2>Java Web Runner</h2>
+    
+    <div class="status-box" id="statusBox">
+        Connecting to backend...
+    </div>
 
     <script>
-        async function runJava() {
-            let input = document.getElementById("userInput").value;
-            let apiUrl = "https://your-backend-host.com/run-java"; // Replace with actual API URL
+        async function checkBackend() {
+            let apiUrl = "https://your-backend-host.com/ping"; // Replace with actual API endpoint
 
-            let response = await fetch(apiUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ input })
-            });
+            try {
+                let response = await fetch(apiUrl);
+                if (response.ok) {
+                    document.getElementById("statusBox").innerText = "Backend is connected!";
+                } else {
+                    document.getElementById("statusBox").innerText = "Backend is unreachable.";
+                }
+            } catch (error) {
+                document.getElementById("statusBox").innerText = "Error connecting to backend.";
+            }
 
-            let data = await response.json();
-            document.getElementById("output").innerText = data.output;
+            document.getElementById("statusBox").style.display = "block";
         }
+
+        checkBackend();
     </script>
 </body>
 </html>
